@@ -106,7 +106,7 @@ def _xfer (s:socket.socket, size:int, src)->None:
         pass
     return
 
-def client (port:int, recurse:bool, filenames:[str]):
+def client (hostname:str, port:int, recurse:bool, filenames:[str]):
     if len (filenames) < 2:
         print ('need at least one input and a single output')
     elif 2 < len (filenames) and not os.path.isdir (filenames[-1]):
@@ -114,7 +114,7 @@ def client (port:int, recurse:bool, filenames:[str]):
     else:
         for fn in filenames[:-1]:
             s = socket.socket()
-            s.connect (('localhost', port))
+            s.connect ((hostname, port))
             _send (s, json.dumps ({'fn':fn, 'recurse':recurse}))
             response = {'done':False, 'err':'', 'fn':''}
             while (not (response['done'] and response['fn'] == fn) and
@@ -133,12 +133,12 @@ def client (port:int, recurse:bool, filenames:[str]):
         pass
     return
 
-def server (filenames:[str]):
+def server (hostname:str, filenames:[str]):
     port = False
     while not port:
         try:
             port = random.randint (5000, 65000)
-            ss = socketserver.TCPServer (('localhost', port), Handler)
+            ss = socketserver.TCPServer ((hostname, port), Handler)
             for fn in filenames:
                 with open (fn, 'rt') as f: text = f.read()
                 with open (fn + '.dcp', 'tw') as f:\
@@ -152,6 +152,8 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser(description='A cheat tool to copy files into a building container during the run statement')
     ap.add_argument('filenames', default=[], metavar='fns', type=str, nargs='*',
                     help='filenames to work with with last always being the output')
+    ap.add_argument ('-H', '--hostname', default='localhost', required=False,
+                     type=str, help='hostname where the server is listening')
     ap.add_argument ('-r', '--recursive', action='store_true', default=False,
                      help='descend into any directories')
     mutex = ap.add_mutually_exclusive_group()
@@ -161,6 +163,6 @@ if __name__ == '__main__':
                          help='run as a service on the host')
     args = ap.parse_args()
 
-    if args.server: server (args.filenames)
-    else: client (args.port, args.recursive, args.filenames)
+    if args.server: server (args.hostname, args.filenames)
+    else: client (args.hostname, args.port, args.recursive, args.filenames)
     pass
