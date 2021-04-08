@@ -133,11 +133,13 @@ def client (hostname:str, port:int, recurse:bool, filenames:[str]):
         pass
     return
 
-def server (hostname:str, filenames:[str]):
-    port = False
-    while not port:
+def server (hostname:str, filenames:[str], port:int=0):
+    iter = 0
+    while not port or not iter:
         try:
-            port = random.randint (5000, 65000)
+            if not port: port = random.randint (5000, 65000)
+
+            iter += 1
             ss = socketserver.TCPServer ((hostname, port), Handler)
             for fn in filenames:
                 with open (fn, 'rt') as f: text = f.read()
@@ -145,7 +147,7 @@ def server (hostname:str, filenames:[str]):
                      f.write (text.replace ('DCP_PORT_NUMBER', str(port)))
                 pass
             ss.serve_forever()
-        except OSError: port = False
+        except OSError: port = 0
     return
 
 if __name__ == '__main__':
@@ -161,8 +163,12 @@ if __name__ == '__main__':
                         help='port number on localhost where the server is listening')
     mutex.add_argument ('-s', '--server', action='store_true', default=False,
                          help='run as a service on the host')
+    mutex.add_argument ('-S', '--fixed-server', default=0, type=int,
+                        help='start the service at a fixed port number')
     args = ap.parse_args()
 
     if args.server: server (args.hostname, args.filenames)
+    elif args.fixed_server:
+        server (args.hostname, args.filenames, args.fixed_server)
     else: client (args.hostname, args.port, args.recursive, args.filenames)
     pass
