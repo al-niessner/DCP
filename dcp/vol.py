@@ -31,6 +31,7 @@ POSSIBILITY OF SUCH DAMAGE.
 NTR:
 '''
 
+import flask
 import os
 
 CONTEXT = set()
@@ -41,22 +42,22 @@ def add (path:str)->None:
 
 def get (request:{})->str:
     '''get file(s) from the current volumes'''
-    result = {}
-    for afn in request.keys():
-        for path in CONTEXT:
-            ffn = os.path.abspath (os.path.join (path, afn))
+    if len(request) != 1: raise KeyError('One file at a time.')
 
-            if not ffn.startswith (path):
-                raise KeyError('Filename is not legal')
-            if not os.path.isfile (ffn): continue
+    request_name = request.to_dict().popitem()[0]
+    result = None
+    for path in CONTEXT:
+        filename = os.path.abspath (os.path.join (path, request_name))
 
-            result[afn] = 'found'
-            pass
+        if not os.path.isfile (filename): continue
+        if not filename.startswith (path):
+            raise KeyError('Filename is not legal')
+
+        result = flask.send_file (filename, as_attachment=True)
         pass
 
-    if not result: FileNotFoundError()
-
-    return str(result)
+    if result is None: raise FileNotFoundError()
+    return result
 
 def put (request:{})->str:
     '''put a single file into the current volumes'''

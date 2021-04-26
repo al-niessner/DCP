@@ -51,7 +51,8 @@ def file()->str:
     '''endpoint /file'''
     try:
         if flask.request.method == 'GET': return dcp.vol.get(flask.request.args)
-        if flask.request.method == 'PUT': return dcp.vol.put(flask.request.args)
+        if flask.request.method == 'PUT': return dcp.vol.put(flask.request.files)
+    except FileNotFoundError: flask.abort (404)
     except KeyError: flask.abort (422)
     return 'method was neither GET nor PUT'
 
