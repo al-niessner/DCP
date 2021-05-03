@@ -33,8 +33,8 @@ NTR:
 
 import argparse
 import configparser
-import dcp.env
-import dcp.vol
+import ddnp.env
+import ddnp.vol
 import os
 
 def _dir (path:str)->str:
@@ -82,12 +82,12 @@ ARGS = AP.parse_args()
 print (ARGS)
 for config in ARGS.env_file:
     for section in config:
-        for key in config[section]: dcp.env.add (section, key,
+        for key in config[section]: ddnp.env.add (section, key,
                                                  config[section][key])
         pass
     pass
-for vpath in ARGS.volume: dcp.vol.add (vpath)
+for vpath in ARGS.volume: ddnp.vol.add (vpath)
 
-if not ARGS.no_run: dcp.app.run(ARGS.debug, ARGS.hostname, ARGS.port)
-print (dcp.env.CONTEXT)
-print (dcp.vol.CONTEXT)
+if not ARGS.no_run: ddnp.app.run(ARGS.debug, ARGS.hostname, ARGS.port)
+print (ddnp.env.CONTEXT)
+print (ddnp.vol.CONTEXT)
