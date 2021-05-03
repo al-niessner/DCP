@@ -33,6 +33,8 @@ NTR:
 
 import flask
 import os
+import tarfile
+import tempfile
 
 CONTEXT = set()
 def add (path:str)->None:
@@ -65,8 +67,23 @@ def put (request:{})->str:
 
 def tar (request:{})->str:
     '''tar up a file(s) or path(s) and deliver it as single item'''
-    result = str(request)
-    return result
+    fid,filename = tempfile.mkstemp()
+    os.close(fid)
+    with tarfile.open (filename, 'w:gz') as tgz:
+        for item in request:
+            for path in CONTEXT:
+                candidate = os.path.abspath (os.path.join (path, item))
+
+                if (not (candidate.startswith(path) and
+                         os.path.exists (candidate))):
+                    raise KeyError('not a leagal path')
+
+                os.chdir (path)
+                tgz.add (item)
+                pass
+            pass
+        pass
+    return flask.send_file (filename, as_attachment=True)
 
 def untar (request:{})->str:
     '''untar into the current volumes'''
