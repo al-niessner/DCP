@@ -42,31 +42,14 @@ import os
 import setuptools
 import sys
 
-def read_requirements():
-    requirements = []
-    with open('./requirements.txt', 'rt') as file:
-        for line in file:
-            # exclude comments
-            line = line[:line.find("#")] if "#" in line else line
-            line = line.strip()  # clean
-
-            if line: requirements.append(line)
-            pass
-        pass
-    return requirements
-
-sys.path.append (os.path.dirname (__file__))
-
-import ddnp
-
 # first item in list must be README file name
-data_files_names = ["README.md", "LICENSE.txt"]
+data_files_names = ["README.md", "LICENSE.txt", 'requirements.txt']
 data_files_locations = [os.path.dirname (__file__)]
 read_me_file = data_files_names[0]
 with open(read_me_file, "rt") as f: description = f.read()
-deps = read_requirements()
+deps = ['flask']
 setuptools.setup(name='ddnp',
-                 version=ddnp.__version__,
+                 version='0.5.3',
                  packages=['ddnp'],
                  setup_requires=deps,
                  src_root=os.path.abspath(os.path.dirname(__file__)),
