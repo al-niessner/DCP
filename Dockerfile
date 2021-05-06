@@ -8,5 +8,5 @@ RUN set -ex && \
     apt-get install -y python3 python3-pip && \
     pip3 install ddnp==${VERSION}
 
-ENTRYPOINT [ "python3", "-m", "dcp" ]
+ENTRYPOINT [ "python3", "-m", "ddnp" ]
 CMD []
