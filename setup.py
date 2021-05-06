@@ -44,13 +44,12 @@ import sys
 
 # first item in list must be README file name
 data_files_names = ["README.md", "LICENSE.txt", 'requirements.txt']
-data_files_locations = [os.path.dirname (__file__)]
 read_me_file = data_files_names[0]
 with open(read_me_file, "rt") as f: description = f.read()
 deps = ['flask']
 setuptools.setup(name='ddnp',
-                 version='0.5.3',
-                 packages=['ddnp'],
+                 version='0.5.5',
+                 packages=setuptools.find_packages(),
                  setup_requires=deps,
                  src_root=os.path.abspath(os.path.dirname(__file__)),
                  install_requires=deps,
@@ -60,10 +59,9 @@ setuptools.setup(name='ddnp',
                               "Operating System :: OS Independent",
                               'License :: Free To Use But Restricted',
                               'Development Status :: 5 - Production/Stable'],
-                 data_files=data_files_locations,
                  description='Docker Data Network Proxy',
                  license='see LICENSE file for details',
                  long_description=description,
                  long_description_content_type="text/markdown",
-                 keywords='adaptive pipeline',
+                 keywords='docker data network proxy copy secret environment',
                  url='https://github.com/al-niessner/DCP')
