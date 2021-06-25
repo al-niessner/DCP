@@ -73,7 +73,7 @@ def ids (request:{})->str:
     '''compute the ids of the given files'''
     # pylint: disable=too-many-nested-blocks
     result = {}
-    for filename in request:
+    for filename in request if request else ['']:
         for path in CONTEXT:
             ifn = os.path.abspath (os.path.join (path, filename))
 
