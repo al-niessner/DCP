@@ -32,13 +32,21 @@ NTR:
 '''
 
 import flask
+import json
 import os
+import subprocess
 import tarfile
 import tempfile
 
 CONTEXT = set()
+
+def _identify (tfn:str)->{}:
+    return {'md5':subprocess.check_output(['md5sum',tfn]).decode().split()[0],
+            'sha1':subprocess.check_output(['sha1sum',tfn]).decode().split()[0]}
+
 def add (path:str)->None:
     '''store another path'''
+    while path.endswith ('/'): path = path[:-1]
     CONTEXT.add (path)
     return
 
@@ -61,7 +69,29 @@ def get (request:{})->str:
     if result is None: raise FileNotFoundError()
     return result
 
-def put (request:{})->str:
+def ids (request:{})->str:
+    '''compute the ids of the given files'''
+    # pylint: disable=too-many-nested-blocks
+    result = {}
+    for filename in request:
+        for path in CONTEXT:
+            ifn = os.path.abspath (os.path.join (path, filename))
+
+            if filename.startswith (path): ifn = filename
+            if os.path.exists (ifn):
+                if os.path.isdir (ifn):
+                    for base,_dns,fns in os.walk (ifn):
+                        for wfn in fns:
+                            bfn = os.path.join (base, wfn)
+                            result[bfn[len(path)+1:]] = _identify (bfn)
+                            pass
+                        pass
+                else: result[ifn[len(path)+1:]] = _identify (ifn)
+            pass
+        pass
+    return json.dumps(result)
+
+def put (_request:{})->str:
     '''put a single file into the current volumes'''
     return 'not implemented'
 
@@ -85,6 +115,6 @@ def tar (request:{})->str:
         pass
     return flask.send_file (filename, as_attachment=True)
 
-def untar (request:{})->str:
+def untar (_request:{})->str:
     '''untar into the current volumes'''
     return 'not implemented'

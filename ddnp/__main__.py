@@ -83,7 +83,7 @@ print (ARGS)
 for config in ARGS.env_file:
     for section in config:
         for key in config[section]: ddnp.env.add (section, key,
-                                                 config[section][key])
+                                                  config[section][key])
         pass
     pass
 for vpath in ARGS.volume: ddnp.vol.add (vpath)

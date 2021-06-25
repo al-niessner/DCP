@@ -56,6 +56,12 @@ def file()->str:
     except KeyError: flask.abort (422)
     return 'method was neither GET nor PUT'
 
+@THIS.route ('/ids', methods=['GET'])
+def ids()->str:
+    '''endpoint /ids'''
+    if flask.request.method == 'GET': return ddnp.vol.ids(flask.request.args)
+    return 'method was not a GET'
+
 def run (debug:bool, hostname:str, port:int)->None:
     '''run the server'''
     THIS.run (debug=debug, host=hostname, port=port)
