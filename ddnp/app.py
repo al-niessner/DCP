@@ -41,8 +41,10 @@ THIS = flask.Flask(__name__)
 def env()->str:
     '''endpoint /env'''
     try:
-        if flask.request.method == 'GET': return ddnp.env.get(flask.request.args)
-        if flask.request.method == 'PUT': return ddnp.env.put(flask.request.args)
+        if flask.request.method == 'GET':
+            return ddnp.env.get(flask.request.args)
+        if flask.request.method == 'PUT':
+            return ddnp.env.put(flask.request.args)
     except KeyError: flask.abort (422)
     return 'method was neither GET nor PUT'
 
@@ -50,8 +52,10 @@ def env()->str:
 def file()->str:
     '''endpoint /file'''
     try:
-        if flask.request.method == 'GET': return ddnp.vol.get(flask.request.args)
-        if flask.request.method == 'PUT': return ddnp.vol.put(flask.request.files)
+        if flask.request.method == 'GET':
+            return ddnp.vol.get(flask.request.args)
+        if flask.request.method == 'PUT':
+            return ddnp.vol.put(flask.request.files, flask.request.args)
     except FileNotFoundError: flask.abort (404)
     except KeyError: flask.abort (422)
     return 'method was neither GET nor PUT'

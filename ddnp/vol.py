@@ -91,21 +91,42 @@ def ids (request:{})->str:
         pass
     return json.dumps(result)
 
-def put (_request:{})->str:
+def put (files:{}, request:{})->str:
     '''put a single file into the current volumes'''
-    return 'not implemented'
+    for path in request:
+        if request[path] not in files: raise KeyError('dangling reference')
+
+        found = []
+        for root in CONTEXT:
+            dirname = os.path.dirname (os.path.abspath
+                                       (os.path.join (root, path)))
+            found.append (os.path.isdir (dirname) and dirname.startswith (root))
+            pass
+
+        if not any(found): raise FileNotFoundError('path does not exist')
+        pass
+    for path in request:
+        for root in CONTEXT:
+            filename = os.path.abspath (os.path.join (root, path))
+
+            if os.path.isdir (os.path.dirname (filename)):
+                files[request[path]].save (filename)
+                pass
+            pass
+        pass
+    return ''
 
 def tar (request:{})->str:
     '''tar up a file(s) or path(s) and deliver it as single item'''
     fid,filename = tempfile.mkstemp()
     os.close(fid)
     with tarfile.open (filename, 'w:gz') as tgz:
-        for item in request:
+        for item in request if request else ['']:
             for path in CONTEXT:
                 candidate = os.path.abspath (os.path.join (path, item))
 
-                if (not (candidate.startswith(path) and
-                         os.path.exists (candidate))):
+                if not (candidate.startswith(path) and
+                        os.path.exists (candidate)):
                     raise KeyError('not a leagal path')
 
                 os.chdir (path)
