@@ -3,7 +3,7 @@
 Utility for providing data from the build host to the build process container.
 
 
-## Check code (static analysis
+## Check code (static analysis)
 
 ```
 pylint -d C0321,C0326,C0411,W0107,R1711 ddnp
