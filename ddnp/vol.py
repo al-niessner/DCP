@@ -98,9 +98,13 @@ def put (files:{}, request:{})->str:
 
         found = []
         for root in CONTEXT:
-            dirname = os.path.dirname (os.path.abspath
-                                       (os.path.join (root, path)))
-            found.append (os.path.isdir (dirname) and dirname.startswith (root))
+            filename = os.path.abspath (os.path.join (root, path))
+            dirname = os.path.dirname (filename)
+            found.append (os.path.isdir (dirname) and
+                          dirname.startswith (root) and
+                          ((os.path.exists (filename) and
+                            os.path.isfile (filename)) or not
+                           os.path.exists (filename)))
             pass
 
         if not any(found): raise FileNotFoundError('path does not exist')
@@ -152,14 +156,11 @@ def untar (files:{}, request:{})->str:
     for path in request:
         for root in CONTEXT:
             dirname = os.path.abspath (os.path.join (root, path))
-
-            if os.path.isdir (os.path.dirname (filename)):
-                fid,filename = tempfile.mkstemp()
-                os.close(fid)
-                files[request[path]].save (filename)
-                with tarfile.open (filename, 'r:gz') as tgz:\
-                     tgz.extract_all (dirname)
-                pass
+            fid,filename = tempfile.mkstemp()
+            os.close(fid)
+            files[request[path]].save (filename)
+            with tarfile.open (filename, 'r:gz') as tgz:\
+                 tgz.extractall (dirname)
             pass
         pass
     return ''

@@ -76,8 +76,8 @@ def tar()->str:
     '''endpoint /tar'''
     try:
         if flask.request.method == 'GET':
-            return ddnp.vol.tar(flask.request.arg)
+            return ddnp.vol.tar(flask.request.args)
         if flask.request.method == 'PUT':
-            return ddnp.vol.untar(flask.request.files,flask.request.arg)
+            return ddnp.vol.untar(flask.request.files,flask.request.args)
     except KeyError: flask.abort (422)
     return 'method was neither GET nor PUT'
