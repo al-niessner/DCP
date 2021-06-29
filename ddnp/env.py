@@ -57,8 +57,10 @@ def get (request:{})->str:
     a string if there is only one key representing the value or a JSON seralized
     map of the key=value pairs.
     '''
-    result = {}
-    for key in request.keys(): result[key] = _get (key)
+    if request:
+        result = {}
+        for key in request.keys(): result[key] = _get (key)
+    else: result = CONTEXT.copy()
 
     if len(result) == 1: result = result.popitem()[1]
     return json.dumps (result)
