@@ -136,6 +136,30 @@ def tar (request:{})->str:
         pass
     return flask.send_file (filename, as_attachment=True)
 
-def untar (_request:{})->str:
+def untar (files:{}, request:{})->str:
     '''untar into the current volumes'''
-    return 'not implemented'
+    for path in request:
+        if request[path] not in files: raise KeyError('dangling reference')
+
+        found = []
+        for root in CONTEXT:
+            dirname = os.path.abspath (os.path.join (root, path))
+            found.append (os.path.isdir (dirname) and dirname.startswith (root))
+            pass
+
+        if not any(found): raise FileNotFoundError('path does not exist')
+        pass
+    for path in request:
+        for root in CONTEXT:
+            dirname = os.path.abspath (os.path.join (root, path))
+
+            if os.path.isdir (os.path.dirname (filename)):
+                fid,filename = tempfile.mkstemp()
+                os.close(fid)
+                files[request[path]].save (filename)
+                with tarfile.open (filename, 'r:gz') as tgz:\
+                     tgz.extract_all (dirname)
+                pass
+            pass
+        pass
+    return ''
