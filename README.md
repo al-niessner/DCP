@@ -12,7 +12,7 @@ pylint -d C0321,C0326,C0411,W0107,R1711 ddnp
 ## Build docker container
 
 ```
-export DDNP_VERSION=1.0.0
+export DDNP_VERSION=1.0.1
 docker build --build-arg VERSION=$DDNP_VERSION \
              --tag ddnp:${DDNP_VERSION} - < Dockerfile
 ```

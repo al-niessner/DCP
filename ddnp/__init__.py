@@ -31,7 +31,7 @@ POSSIBILITY OF SUCH DAMAGE.
 NTR:
 '''
 
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 from . import app
 from . import env
