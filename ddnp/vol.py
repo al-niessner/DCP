@@ -129,8 +129,8 @@ def tar (request:{})->str:
             for path in CONTEXT:
                 candidate = os.path.abspath (os.path.join (path, item))
 
-                if not (candidate.startswith(path) and
-                        os.path.exists (candidate)):
+                if not os.path.exists (candidate): continue
+                if not candidate.startswith(path):
                     raise KeyError('not a leagal path')
 
                 os.chdir (path)
