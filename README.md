@@ -22,3 +22,14 @@ docker build --build-arg VERSION=$DDNP_VERSION \
 ```
 PYTHONPATH=/home/niessner/Projects/DCP python3 -m ddnp -e /home/niessner/Projects/DCP/example.txt -v /tmp/test
 ```
+
+
+## Endpoints
+
+### <URL base>/env  GET/PUT
+### <URL base>/file GET/PUT
+
+`<urlbase>/file?<path to file>`
+
+### <URL base>/ids  GET
+### <URL base>/tar  GET/PUT

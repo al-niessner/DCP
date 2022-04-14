@@ -69,7 +69,7 @@ AP.add_argument ('-d', '--debug', action='store_true', default=False,
 AP.add_argument ('-e', '--env-file', default=[], nargs='*', type=_env,
                  help=('an environment file as simple as example.txt or as '+
                        'complicated as defined by Python configparser where '+
-                       'groups and delimited by ".".'))
+                       'groups are delimited by ".".'))
 AP.add_argument ('-H', '--hostname', default='localhost',
                  help='host name to serve on [%(default)s]')
 AP.add_argument ('-N', '--no-run', action='store_true', default=False,
